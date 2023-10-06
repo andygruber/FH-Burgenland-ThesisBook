@@ -1,0 +1,80 @@
+name: Build LaTeX document  
+
+on:
+  push:
+    branches: [ "main", "release/*", "develop", "develop/*" ]
+  pull_request:
+    branches: [ "main", "release/*", "develop", "develop/*" ]
+  release:
+    types: [published]
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+
+      - name: Add version if real release
+        if: github.event_name == 'release'
+        run: echo '\newcommand\docversion{${{ github.event.release.tag_name }}}' > section/versinfo.tex
+
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: "*.tex"
+          glob_root_file: true
+
+      - name: Rename PDFs
+        run: |
+            pdfs=( *.pdf )
+            num_pdfs=${#pdfs[@]}
+            if [ "$num_pdfs" -eq 0 ]; then
+                echo "No PDFs found."
+                exit 1
+            fi
+    
+            # Generate the base name for the PDFs
+            base_name="${GITHUB_REPOSITORY##*/}"
+            if [ "$GITHUB_EVENT_NAME" == "release" ]; then
+                base_name="${base_name}_${{ github.event.release.tag_name }}"
+            fi
+    
+            # If only one PDF is found, rename it
+            if [ "$num_pdfs" -eq 1 ]; then
+                mv "${pdfs[0]}" "${base_name}.pdf"
+                exit 0
+            fi
+    
+            # If multiple PDFs are found, rename them with their original names appended
+            for pdf in "${pdfs[@]}"; do
+                original_name=$(basename "$pdf" .pdf)
+                new_name="${base_name}_${original_name}.pdf"
+                mv "$pdf" "$new_name"
+            done
+  
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v3
+        with:
+          name: PDF
+          path: "*.pdf"
+
+  release:
+    if: github.event_name == 'release'
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build_latex
+    steps:
+
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: PDF
+        path: ./
+
+    - name: Upload to Release
+      id: upload_to_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          *.pdf
