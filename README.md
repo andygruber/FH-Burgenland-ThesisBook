@@ -1,17 +1,21 @@
-# LaTeX-Builder Documentation
+# FH Burgenland Thesis Book LaTeX template
 
 ## Overview
-LaTeX-Builder is a template repository designed to streamline the process of building and releasing LaTeX documents.
-You can either fork this repository or directly use the "Use this template" button on GitHub to get started.
+
+This template is based on the original work from Dominik Thiede (https://www.linkedin.com/in/dominik-thiede/).
+
+The GitHub Workflow for automation with Actions is based on the [LaTeX-builder](https://github.com/andygruber/LaTeX-builder) repository.
 
 ## Usage
+
+For information on the usage of the LaTeX template see [here](USAGE.md).
 
 ### **GitHub Action Workflow**
 
 - **Building**: Automatically compiles all `*.tex` files located in the repository root.
 - **Accessing Outputs**: Post-compilation, the resulting PDF files can be accessed from the build artifacts.
 - **Triggers**: The workflow is activated after commits to the `main` branch, any `release/*` branches, or upon pull requests to these branches.
-- **Releases**: On creating and publishing a release, the any PDF file will be appended to the release. If it is just one PDF, it will be added in the form of `<reponame>_<tagname>.pdf` (e.g., `LaTeX-builder_v0.0.1.pdf`). If there are more PDFs than one, the original name of the PDF will be appended after the `tagname` (e.g., `LaTeX-builder_v0.0.1_demo.pdf`).
+- **Releases**: On creating and publishing a release, the any PDF file will be appended to the release. If it is just one PDF, it will be added in the form of `<reponame>_<tagname>.pdf` (e.g., `FH-Burgenland-ThesisBook_v0.0.1.pdf`). If there are more PDFs than one, the original name of the PDF will be appended after the `tagname` (e.g., `FH-Burgenland-ThesisBook_v0.0.1_demo.pdf`).
 
 #### Setup
 To ensure the release workflow functions optimally, grant the necessary read/write permissions by navigating to: `Repo-Settings -> Actions -> General -> Workflow permissions`.
@@ -36,11 +40,12 @@ To ensure the release workflow functions optimally, grant the necessary read/wri
 
 The `section/versinfo.tex` file contains version details. To incorporate it in another `.tex` file, use:
 ```latex
+% import the required file
 \input{section/versinfo.tex}
+% command which actually writes the version information
+\docversion
 ```
 During standard builds (be it local or via GitHub Action), the output will display `DRAFT` followed by the date and time (e.g., `DRAFT 2023-03-06 13:32:10`). For release builds, the tag name will be shown (e.g., `v0.0.1`).
-
-For a hands-on example, refer to the `demo.tex` file.
 
 ## Contributing
 
