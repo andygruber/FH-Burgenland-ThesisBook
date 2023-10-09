@@ -16,7 +16,9 @@
     urlcolor=blue,        % quite common
     pdfstartview={Fit},        % "Fit" fits the page to the window
     pdfpagemode=UseOutlines,    % open bookmarks in Acrobat
-    plainpages=false      % avoids duplicate page number problem
+    plainpages=false,      % avoids duplicate page number problem
+    pdflang={\PDFdocumentLang},
+    pdfkeywords={\docversion}
 }
 
 \begin{document}
@@ -47,20 +49,20 @@
 
 % do not start chapter on new page
 \makeatletter
-\patchcmd{\chapter}{\clearpage}{\leavevmode\flushleft}{}{}
+\patchcmd{\chapter}{\clearpage}{\par}{}{}
 \makeatother
 
 \vspace{5em}
 \begin{abstract}
-    \input{A_FrontMatter/abstract-plain-de}
+    \input{A_FrontMatter/abstract-plain-en}
 \end{abstract}
 \vspace{2em}
 \input{B_Chapters/01_Introduction}
-\input{B_Chapters/02_Fundamentals}
-\input{B_Chapters/03_Methodology}
-\input{B_Chapters/04_Empirical_work}
-\input{B_Chapters/05_Discussion}
-\input{B_Chapters/06_Synopsis}
+\input{B_Chapters/02_Related_work}
+\input{B_Chapters/03_Research_question}
+\input{B_Chapters/04_Methodology}
+\input{B_Chapters/05_Results}
+\input{B_Chapters/06_Conclusion}
 
 \titleformat{\chapter}{\normalfont\Large}{\thechapter}{20pt}{\normalfont\Large}
 \printbibliography[title=\thesisBookLiteratureLabel]
